@@ -389,5 +389,29 @@ def save_tiktok_multi_urls(video_urls,
         time.sleep(random.randint(1, sleep))
     print('Saved',len(tt_urls),'videos and/or lines of metadata')
 
-def download_tiktok_video(tiktok_url):
-    save_tiktok(tiktok_url,save_video=True)
+def save_tiktok_audio(video_url,
+                save_audio=True,
+                metadata_fn='',
+                browser_name=None):
+    if 'cookies' not in globals() and browser_name is None:
+        raise BrowserNotSpecifiedError
+    
+    tt_json = get_tiktok_json(video_url, browser_name)
+    print(tt_json)
+
+    # Extract audio URL from JSON data
+    if tt_json is not None:
+        video_id = list(tt_json['ItemModule'].keys())[0]
+        audio_url = tt_json['ItemModule'][video_id]['music']['playUrl']['urlList'][0]
+
+        # Download audio content
+        audio_filename = f'tiktok_{video_id}.mp3'
+        audio_request = requests.get(audio_url, allow_redirects=True)
+        with open(audio_filename, 'wb') as audio_file:
+            audio_file.write(audio_request.content)
+
+        print("Saved TikTok audio to:", audio_filename)
+
+
+def download_tiktok_audio(tiktok_url):
+    save_tiktok_audio(tiktok_url,save_audio=True)
