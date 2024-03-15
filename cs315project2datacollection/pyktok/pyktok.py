@@ -389,5 +389,12 @@ def save_tiktok_multi_urls(video_urls,
         time.sleep(random.randint(1, sleep))
     print('Saved',len(tt_urls),'videos and/or lines of metadata')
 
-def download_tiktok_video(tiktok_url):
-    save_tiktok(tiktok_url,True)
+def download_tiktok_video(tiktok_url, browser_name=None):
+    if 'cookies' not in globals() and browser_name is None:
+        raise BrowserNotSpecifiedError
+    tt_json = get_tiktok_json(tiktok_url,browser_name)
+    data_loc = tt_json['ItemModule']
+
+    for v in data_loc:
+        video_url = 'https://www.tiktok.com/@' + data_loc[v]['author'] + '/video/' + data_loc[v]['id']
+        save_tiktok(video_url,True)
