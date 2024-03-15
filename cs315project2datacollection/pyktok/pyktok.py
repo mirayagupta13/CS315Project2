@@ -388,3 +388,6 @@ def save_tiktok_multi_urls(video_urls,
         save_tiktok(u,save_video,metadata_fn,browser_name)
         time.sleep(random.randint(1, sleep))
     print('Saved',len(tt_urls),'videos and/or lines of metadata')
+
+def download_tiktok_video(tiktok_url):
+    save_tiktok(tiktok_url,save_video=True)
