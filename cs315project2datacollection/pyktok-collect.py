@@ -19,11 +19,11 @@ def collect_metadata(inputFile, outputFile):
         print("There is something wrong with the data format.")
         return
     
-pyk.specify_browser('chrome')
-pyk.save_tiktok_multi_urls(urls,  # list of URLs to visit
-                           False, # don't save videos is False
-                           outputFile, # csv file
-                           5) # max time sleep
+    pyk.specify_browser('chrome')
+    pyk.save_tiktok_multi_urls(urls,  # list of URLs to visit
+                               False, # don't save videos   
+                		       outputFile, # csv file
+                		       5) # max time sleep
     
 if __name__ == "__main__":
     _, fin, fout = sys.argv
