@@ -396,22 +396,42 @@ def save_tiktok_audio(video_url,
     if 'cookies' not in globals() and browser_name is None:
         raise BrowserNotSpecifiedError
     
-    tt_json = get_tiktok_json(video_url, browser_name)
-    print(tt_json)
-
-    # Extract audio URL from JSON data
-    if tt_json is not None:
-        video_id = list(tt_json['ItemModule'].keys())[0]
-        audio_url = tt_json['ItemModule'][video_id]['music']['playUrl']['urlList'][0]
-
-        # Download audio content
-        audio_filename = f'tiktok_{video_id}.mp3'
-        audio_request = requests.get(audio_url, allow_redirects=True)
-        with open(audio_filename, 'wb') as audio_file:
-            audio_file.write(audio_request.content)
-
-        print("Saved TikTok audio to:", audio_filename)
-
-
+    tt_audio = None
+    tt_audio_url = None
+    locate_el = True
+    tt_json = alt_get_tiktok_json(video_url, browser_name)
+    regex_url = re.findall(url_regex, video_url)[0]
+    audio_fn = regex_url.replace('/', '_') + '.mp3'
+    try:
+        tt_audio_url = tt_json["__DEFAULT_SCOPE__"]['webapp.video-detail']['itemInfo']['itemStruct']['music']['playUrl'] #['urlList'][0]
+    except:
+        locate_el = False
+    headers['referer'] = 'https://www.tiktok.com/'
+    # include cookies with the video request
+    if tt_audio_url:
+        try:
+            tt_audio = requests.get(tt_audio_url, allow_redirects=True, headers=headers, cookies=cookies)
+        except:
+            print("timed out, moving on to next vid..")
+            locate_el = False
+    if save_audio == True and tt_audio:
+        with open(audio_fn, 'wb') as fn:
+            fn.write(tt_audio.content)
+    if not locate_el:
+        with open("failed_to_locate.csv", 'a') as fn:
+                csvwriter = writer(fn)
+                csvwriter.writerow([video_url])
+                fn.close()
+    if save_audio == True:
+        print("Saved audio\n", tt_audio_url, "\nto\n", os.getcwd())
+    if metadata_fn != '':
+        print("Saved metadata for video\n",video_url,"\nto\n",os.getcwd())
+    print("got here")
+    print(tt_json['ItemModule'])
+    
+    
 def download_tiktok_audio(tiktok_url):
     save_tiktok_audio(tiktok_url,save_audio=True)
+
+
+        

@@ -1,5 +1,6 @@
 import pyktok as pyk
 import logging
+import time
 
 def download_tiktok_mp3s(urls):
     logger = logging.getLogger()
@@ -10,10 +11,11 @@ def download_tiktok_mp3s(urls):
     for url in urls:
         try:
             pyk.download_tiktok_audio(url)
+            time.sleep(3)
         except Exception as exc:
-            logger.warn("error while processing item: %s", exc)
+            logger.warning("error while processing item: %s", exc)
 
     return True
 
 if __name__ == "__main__":
-    download_tiktok_mp3s(['https://www.tiktok.com/@comedicpill/video/7318066454983740715'])
+    download_tiktok_mp3s(['https://www.tiktokv.com/share/video/7315561816673750318/'])
