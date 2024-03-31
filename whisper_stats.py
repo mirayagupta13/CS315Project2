@@ -5,7 +5,7 @@ from cs315project2datacollection.download_videos import download_tiktok_mp3s
 
 def generate_video_id_list():
     # Read the CSV file containing cosine similarities
-    df = pd.read_csv("./cosineSimilarites.csv")
+    df = pd.read_csv("cosinedata/overall_cosine_similarities.csv")
     df = df[df['score_news'].notnull()]
     # Pandas DF Cols: video id, description, similarities
     df = df.sort_values(by=['score_news'], ascending=False)
