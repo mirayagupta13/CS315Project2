@@ -6,9 +6,9 @@ from cs315project2datacollection.download_videos import download_tiktok_mp3s
 def generate_video_id_list():
     # Read the CSV file containing cosine similarities
     df = pd.read_csv("cosinedata/overall_cosine_similarities.csv")
-    df = df[df['score_news'].notnull()]
+    df = df[df['cos_score'].notnull()]
     # Pandas DF Cols: video id, description, similarities
-    df = df.sort_values(by=['score_news'], ascending=False)
+    df = df.sort_values(by=['cos_score'], ascending=False)
 
     # sort by cosine similarity, in order of greatest similarity
     files_to_transcribe = df.iloc[:10]['video_id']
@@ -18,7 +18,7 @@ def generate_video_id_list():
 def transcribe(video_ids=[]):
     filenames = [f"share_video_{id}_.mp3" for id in video_ids]
 
-    client = OpenAI(api_key='my-api-key-here')
+    client = OpenAI(api_key='my_api_key_here')
 
     responses = {}
 
@@ -37,6 +37,7 @@ if __name__ == "__main__":
     for file in files:
         print(type(file))
         print(int(file))
+        print(file)
     # download_tiktok_mp3s(files)
     # responses = transcribe([])
     # print(responses)
